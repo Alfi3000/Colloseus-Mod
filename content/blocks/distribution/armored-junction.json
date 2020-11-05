@@ -1,0 +1,17 @@
+{
+	"localizedName": "Бронированный перекресток",
+	"type": "Junction",
+	"description": "Намного прочнее, чем титановый перекрёсток",
+	"size": 1,
+	"speed": 9.5,
+	"capacity": 16,
+	"health": 160,
+	"buildCostMultiplier": 5,
+	"category": "distribution",
+	"research": "titanium-junction",
+	"requirements": [
+		{ "item": "metaglass", "amount": 3 }, 
+		{ "item": "thorium", "amount": 3 }, 
+		{ "item": "plastanium", "amount": 3 }
+	]
+}

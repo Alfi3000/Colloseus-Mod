@@ -1,0 +1,16 @@
+{
+	"localizedName": "Бронирований маршрутизатор",
+	"type": "Router",
+	"description": "Намного прочнее, чем титановый маршрутизатор",
+	"size": 1,
+	"speed": 2.6,
+	"health": 160,
+	"buildCostMultiplier": 1.5,
+	"category": "distribution",
+	"research": "titanium-router",
+	"requirements": [
+		{ "item": "metaglass", "amount": 3 }, 
+		{ "item": "thorium", "amount": 3 }, 
+		{ "item": "plastanium", "amount": 3 }
+	]
+}

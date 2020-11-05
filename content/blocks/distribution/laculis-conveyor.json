@@ -1,0 +1,13 @@
+{
+	"type": "Conveyor",
+	"name": "Лакулис конвейер ",
+	"description": "Быстрее, чем кинетический конвейер",
+	"health": 625,
+	"requirements": [
+		{"item": "laculis", "amount": 1}, 
+		{"item": "phase-fabric", "amount": 1}
+	],
+	"category": "distribution",
+	"speed": 0.22, 
+	"research": "electrum-conveyor"
+}

@@ -1,0 +1,15 @@
+{
+	"localizedName": "Кинетический перекресток",
+	"type": "Junction",
+	"description": "Гораздо быстрее и прочнее, чем бронированный перекрёсток",
+	"size": 1,
+	"speed": 18.0,
+	"capacity": 30,
+	"health": 350,
+	"buildCostMultiplier": 7.0,
+	"category": "distribution",
+	"research": "armored-junction",
+	"requirements": [
+		{ "item": "surge-alloy", "amount": 3 }
+	]
+}

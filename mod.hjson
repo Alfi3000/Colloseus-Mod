@@ -1,0 +1,8 @@
+{
+    name: "collos" 
+    displayName: "[#EA64FF]Colloseus [white]mod[][]"
+    author: "[white]ASD[]"
+    description: ""
+    version: "1.0.0"
+    minGameVersion: 105
+}
