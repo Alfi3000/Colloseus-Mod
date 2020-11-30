@@ -1,126 +1,291 @@
-var LaserLenght = 320
-const F = require("functions/f");
+//Totally import system
+const F = require("func");
+const C = this.global.COLORS;
+const S = this.global.STATUSES;
+const SO = this.global.SOUNDS;
+const E = this.global.EFFECTS;
 
-const SquareCharge = newEffect(90, e => {
-    Draw.color(Color.valueOf("#FFE93D"));
-    Lines.stroke(e.fin()*11.0);      
-    Lines.square(e.x, e.y, e.fin(), Time.time()*4);
-    Draw.color();
+////
+////
+//// 
+  
+const DischargeBullet = extend(BasicBulletType, {
+    update(b){
+        Lightning.create(b, F.fi("topaz").color, 30.0, b.x, b.y, Mathf.random(360.0), 3.0 + Mathf.random(2.0))
+    }
 });
+DischargeBullet.hitEffect = E.hitMovingLaser;
+DischargeBullet.despawnEffect = Fx.none;
+DischargeBullet.pierce = false;
+DischargeBullet.hittable = false;
+DischargeBullet.absorbable = false
+DischargeBullet.reflectable = false;
+DischargeBullet.collides = false;
+DischargeBullet.damage = 60;
+DischargeBullet.speed = 3.0;
+DischargeBullet.lifetime = 90;
+DischargeBullet.hitSize = 14;
+DischargeBullet.width = 15;
+DischargeBullet.height = 15;
 
-const laser2 = extend(BasicBulletType,{
-    draw(b) {
-		
-		const colors = [Color.valueOf("#FFE93D44"), Color.valueOf("FFE93D66"), Color.valueOf("FFE93D99"), Color.valueOf("#FFF43D"), Color.valueOf("#FFD53D"), Color.valueOf("ffffff")];
-		const tscales = [1.4, 1.1, 0.9, 0.55];
-		const strokes = [1.3, 1.2, 1.1, 0.9, 0.72, 0.5];
-		const lenscales = [1.0, 1.10, 1.15, 1.167];
-		const tmpColor = new Color(); //.shiftHue((s * 17) + (Time.time() * 2.0)) 
-
-		for(var s = 0; s < 6; s++){
-			
-			Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time(), 1.2, 0.4)));
-			for(var i = 0; i < 4; i++){
-				Tmp.v1.trns(b.rot() + 180.0, (lenscales[i] - 1.0) * 34.0);
-				Lines.stroke((8 + Mathf.absin(Time.time() + (2 * s), 1.9, 1.3)) * b.fout() * strokes[s] * tscales[i]);
-				Lines.lineAngle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rot(), 180 * b.fout() * lenscales[i], CapStyle.none);
-			}
-		};
-		Draw.reset();
- },
+DischargeBullet.frontColor = F.fi("topaz").color;
+DischargeBullet.backColor = F.fi("topaz").color.cpy().mul(0.8);
  
-     update(b){
-		if(b.timer.get(12)){
-			Damage.collideLine(b, b.getTeam(), this.hitEffect, b.x, b.y, b.rot(), 180.0, false);
-		};
-	},
-});
-
-laser2.hitEffect = Fx.hitLancer;
-laser2.despawnEffect = Fx.none;
-laser2.pierce = true;
-laser2.lifetime = 16;
-laser2.damage = 20;
-laser2.speed = 0.001;
- 
- const Dbl = extendContent(PowerTurret, "yellow1-laser-turret", {});
-Dbl.shootType = laser2;
-Dbl.health = 2370;
-Dbl.reload = 10;
-Dbl.powerUse = 2.0;
-Dbl.shotWidth = 8.0;
-Dbl.size = 3;
-Dbl.inaccuracy = 5;
-Dbl.range = 200;
-Dbl.buildCostMultiplier = 0.8;
-Dbl.requirements(Category.turret, ItemStack.with(F.fi("topaz"), 80, Items.silicon, 55, Items.titanium, 40, Items.plastanium, 35));
-
-const l = extend(BasicBulletType,{
+const Discharge = extendContent(PowerTurret, "discharge", {});
+Discharge.shootType = DischargeBullet;
+Discharge.shootSound = Sounds.railgun;
+Discharge.shootEffect = E.thunderShoot;
+Discharge.powerUse = 800.0/60.0;
+Discharge.reloadTime = 60.0;
+Discharge.ammoUseEffect = Fx.none;
+Discharge.recoilAmount = 4.0;
+Discharge.restitution = 0.03;
+Discharge.range = 180.0;
+Discharge.health = 4375;
+Discharge.size = 3;
+Discharge.category = Category.turret;
+Discharge.buildVisibility = BuildVisibility.shown;
+Discharge.requirements = ItemStack.with(F.fi("topaz"), 120, Items.silicon, 80, Items.metaglass, 100, Items.titanium, 100);
+  
+  /////
+  /////
+  /////
+  
+const MovingLaser = extend(BasicBulletType, {
     draw(b) {
-        Draw.color(Color.valueOf("#FFE93D44"));
-        Lines.stroke(11.0);      
-        Lines.square(b.x, b.y, 11.0, Time.time()*4);
-        Draw.color();     
-        Draw.color(Color.valueOf("#FFE93D"));
-        Lines.stroke(9.0);      
-        Lines.square(b.x, b.y, 9.0, Time.time()*4);
-        Draw.color();     
-        Draw.color(Color.valueOf("#FFFFFF"));
-        Lines.stroke(5.0);      
-        Lines.square(b.x, b.y, 3.5, Time.time()*4);
-        Draw.color();     
+    	if(b.data == null) return;
+    
+    	var Beams = b.data[2];
+        var alpha = Mathf.clamp(b.time > this.lifetime - 20.0 ? 1.0 - (b.time - (this.lifetime - 20.0)) / 2.0 : 1.0);
+    
+        for(var i = 0; i < Beams.length; i++) {
+            var Beam = Beams[i];
+            
+            Draw.color(F.fi("topaz").color);
+            Draw.alpha((i == 0 || i == Beams.length - 1) ? ((i == Beams.length - 1) ? (Beams[0][4][0]) : (Beams[Beams.length-1][4][1])) : alpha);
+            
+            Lines.stroke(3.0);
+        	Lines.line(Beam[0], Beam[1], Beam[2], Beam[3]);
+            Lines.stroke(1.0);
+            Draw.alpha(1.0);
+            Draw.color();
+        } 
     },
  
     update(b){
-        if(b.timer.get(3)){
-            Damage.damage(b.getTeam(), b.x, b.y, 4*Vars.tilesize, this.damage);
+    	if(b.data == null) return;
+    
+    	const Beams = b.data[2];
+        const PredBeam = Beams[Beams.length - 1];
+    
+        if(Beams[0][4][1] > 0.21); Beams[0][4][1] -= 0.2 * Time.delta;
+        if(Beams[Beams.length-1][4][0] < 0.98); Beams[Beams.length-1][4][0] += 0.2 * Time.delta;
+        
+    	if(b.data == null) return;
+    	if(b.timer.get(1) && b.data[1] > Beams.length * 24.0) {
+    	    var v = new Vec2();
+            v.trns(b.rotation() + Mathf.range(20.0), 24.0);
+             
+            E.movingLaserOnExtend.at(PredBeam[2], PredBeam[3], Angles.angle(PredBeam[2], PredBeam[3], PredBeam[2] + v.x, PredBeam[3] + v.y));
+            Beams.push([PredBeam[2], PredBeam[3], PredBeam[2] + v.x, PredBeam[3] + v.y, [0.0, 1.0]]);
+        };
+        
+        for(var i = 0; i < Beams.length; i++) { 
+            var Beam = Beams[i];
+            
+	    	Damage.collideLine(b, b.team, Fx.none, Beam[0], Beam[1], Angles.angle(Beam[0], Beam[1], Beam[2], Beam[3]), 24.0);
         }
-    }
+    }, 
+    
+    despawned(b) {
+        this.hitSound.at(b);
+    
+    	b.data = null;
+    }, 
 });
 
-l.hitEffect = Fx.hitMeltdown;
-l.despawnEffect = Fx.none;
-l.pierce = false;
-l.collidesTiles = false;
-l.collides = false;
-l.hittable = false;
-l.damage = 320;
-l.speed = 15.0;
+MovingLaser.hitEffect = E.hitMovingLaser;
+MovingLaser.despawnEffect = Fx.none;
+MovingLaser.pierce = false;
+MovingLaser.hittable = false;
+MovingLaser.absorbable = false;
+MovingLaser.reflectable = false;
+MovingLaser.damage = 32;
+MovingLaser.speed = 4.8;
+MovingLaser.lifetime = 70;
+MovingLaser.drawSize = 1500;
  
- const t = extendContent(ChargeTurret,"laser-turret",{
+ const Thunder = extendContent(PowerTurret, "thunder", {
+	load(){
+		this.super$load();
+		
+		this.region = F.tex("thunder");
+		this.baseRegion = F.tex("block-5");
+	},
+	
+	icons(){
+		return [
+			F.tex("block-5"),
+			F.tex("thunder")
+		];
+    }
+});
+Thunder.buildType = () => {
+	const ent = extendContent(PowerTurret.PowerTurretBuild, Thunder, {
+        bullet(type, angle){
+            var bx = this.x + this.block.tr.x;
+            var by = this.y + this.block.tr.y;
+            
+            var lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(bx, by, this.targetPos.x, this.targetPos.y) / type.range(), this.block.minRange / type.range(), this.blck.range / type.range()) : 1.0;
+            var length = 16;
+            
+            var bu = type.create(this, this.team, bx, by, angle, 1.0 + Mathf.range(this.block.velocityInaccuracy), lifeScl);
+            
+            var v = new Vec2();
+            v.trns(angle, length);
+            
+            var bx2 = bx + v.x;
+            var by2 = by + v.y;
+            
+            bu.data = [angle, 360.0, [[bx, by, bx2, by2, [0.0, 1.0]]], length, bx, by];
+        }
+	});
+	return ent;
+};
+Thunder.shootType = MovingLaser;
+Thunder.shootSound = SO.movingLaser;
+Thunder.shootEffect = E.thunderShoot;
+Thunder.powerUse = 20;
+Thunder.reloadTime = 90.0;
+Thunder.restitution = 0.01; 
+Thunder.ammoUseEffect = Fx.none;
+Thunder.recoilAmount = 6.0;
+Thunder.range = 360;
+Thunder.health = 15800;
+Thunder.size = 5;
+Thunder.buildCostMultiplier = 0.8;
+Thunder.powerUse = 3000.0/60.0;
+Thunder.category = Category.turret;
+Thunder.buildVisibility = BuildVisibility.shown;
+Thunder.requirements = ItemStack.with(F.fi("topaz"), 400, Items.silicon, 325, F.fi("cutol"), 150, F.fi("lux"), 240, Items.surgeAlloy, 340, Items.phaseFabric, 180);
+ 
+////
+////
+////
+
+const SunAbsorberLaser = extend(ContinuousLaserBulletType, {
+	update: function(b){
+
+		Effect.shake(5.0, 5.0, b.x, b.y);
+        
+        for(var i = 0; i < 2; i++) {
+	        var v = new Vec2();
+	        v.trns(b.rotation(), Mathf.random(25.0, 810.0));
+	
+	        var rot = Mathf.random(1.0) >= 0.5 ? 45 : -45;
+	        Lightning.create(b.team, C.energy, 75, b.x + v.x, b.y + v.y, b.rotation()+(rot), Mathf.random(15, 20));
+        };
+
+        if(b.timer.get(1, 8)){
+            E.YellowBeamFlare.at(b.x, b.y, b.rotation());
+            E.YellowBeamFlare2.at(b.x, b.y, b.rotation()); 
+            E.YellowBeamFlare3.at(b.x, b.y, b.rotation()); 
+            
+            Damage.collideLine(b, b.team, this.hitEffect, b.x, b.y, b.rotation(), 930.0, true);
+        }
+	}, 
+
+    draw(b){
+        /* float realLength = Damage.findLaserLength(b, length); */
+        var fout = Mathf.clamp(b.time > b.lifetime - this.fadeTime ? 1.0 - (b.time - (this.lifetime - this.fadeTime)) / this.fadeTime : 1.0);
+        var baseLen = /*realLength*/ this.length * fout;
+
+        Lines.lineAngle(b.x, b.y, b.rotation(), baseLen);
+        for(var s = 0; s < this.colors.length; s++){
+            Draw.color(Tmp.c1.set(this.colors[s]).mul(1.0 + Mathf.absin(Time.time(), 1.0, 0.1)));
+            for(var i = 0; i < this.tscales.length; i++){
+                Tmp.v1.trns(b.rotation() + 180.0, (this.lenscales[i] - 1.0) * 35.0);
+                Lines.stroke((this.width + Mathf.absin(Time.time(), this.oscScl, this.oscMag)) * fout * this.strokes[s] * this.tscales[i]);
+                Lines.lineAngle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rotation(), baseLen * this.lenscales[i], false);
+            }
+        };
+
+        Tmp.v1.trns(b.rotation(), baseLen * 1.1);
+
+        Drawf.light(b.team, b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, 40, this.lightColor, 0.7);
+        Draw.reset();
+    } 
+});
+
+SunAbsorberLaser.oscScl = 1.2;
+SunAbsorberLaser.oscMag = 0.8;
+SunAbsorberLaser.length = 900.0;
+SunAbsorberLaser.width = 28.0;
+SunAbsorberLaser.colors = [Color.valueOf("FFE93D44"), Color.valueOf("FFE93D66"), Color.valueOf("FFF43D99"), Color.white];
+SunAbsorberLaser.strokes = [1.0, 0.85, 0.7, 0.5];
+SunAbsorberLaser.tscales = [1.4, 1.1, 0.9, 0.55];
+SunAbsorberLaser.lenscales = [0.8, 0.92, 0.98, 1.01];
+SunAbsorberLaser.damage = 1200;
+SunAbsorberLaser.hitEffect = Fx.hitMeltdown;
+SunAbsorberLaser.despawnEffect = Fx.none;
+SunAbsorberLaser.hitSize = 28.0;
+SunAbsorberLaser.drawSize = 1100; //870+130
+SunAbsorberLaser.shootEffect = Fx.none;
+SunAbsorberLaser.smokeEffect = Fx.none;
+SunAbsorberLaser.hittable = false;
+SunAbsorberLaser.absorbable = false
+SunAbsorberLaser.reflectable = false;
+
+const SunAbsorber = extendContent(LaserTurret, "absorber", {
 	load(){
 		this.super$load();
 		
 		this.region = Core.atlas.find(this.name);
-		this.baseRegion = Core.atlas.find("colloseusmod-block-" + this.size);
-		/////this.heatRegion = Core.atlas.find(this.name + "-heat");
+		this.baseRegion = Core.atlas.find("collos-block-" + this.size);
 	},
 	
 	generateIcons: function(){
 		return [
-			Core.atlas.find("colloseusmod-block-" + this.size),
+			Core.atlas.find("collos-block-" + this.size),
 			Core.atlas.find(this.name)
 		];
     }
 });
+SunAbsorber.buildVisibility = BuildVisibility.shown;
+SunAbsorber.shootType = SunAbsorberLaser;
+SunAbsorber.update = true;
+SunAbsorber.health = 34500;
+SunAbsorber.size = 8;
+SunAbsorber.reloadTime = 1200;
+SunAbsorber.chargeTime = 300;
+SunAbsorber.chargeEffects = 20;
+SunAbsorber.chargeBeginEffect = E.YellowBeamChargeBegin;
+SunAbsorber.chargeBegin = E.YellowBeamCharge;
+SunAbsorber.chargeMaxDelay = 300;
+SunAbsorber.coolantMultiplier = 2.0;
+SunAbsorber.shootDuration = 600;
+SunAbsorber.firingMoveFract = 0.0;
+SunAbsorber.hasPower = true;
+SunAbsorber.hasLiquids = true;
+SunAbsorber.range = 870;
+SunAbsorber.ammoUseEffect = Fx.none;
+SunAbsorber.rotateSpeed = 0.4;
+SunAbsorber.recoilAmount = 5.0;
+SunAbsorber.restitution = 0.005;
+SunAbsorber.powerUse = 225;
+SunAbsorber.buildCostMultiplier = 0.3;
+SunAbsorber.consumes.liquid(F.fl("helium-liquid"), 0.5);
+SunAbsorber.category = Category.turret;
+SunAbsorber.requirements = ItemStack.with(F.fi("topaz"), 740, F.fi("laculis"), 230, F.fi("lux"), 320, F.fi("meteorite"), 260, Items.silicon, 550, Items.phaseFabric, 340, Items.surgeAlloy, 465, F.fi("contritum"), 540);
 
-t.shootType = l;
-t.chargeEffect = SquareCharge;
-t.targetAir = true;
-t.targetFalse = true;
-t.inaccuracy = 0;
-t.powerUse = 20;
-t.reload = 240;
-t.ammoUseEffect = Fx.none;
-t.recoil = 5;
-t.chargeEffects = 1;
-t.chargeMaxDelay = 1;
-t.chargeTime = 90;
-t.range = 360;
-t.health = 4375;
-t.size = 5;
-t.buildCostMultiplier = 0.8;
-t.requirements(Category.turret, ItemStack.with(F.fi("topaz"), 375, Items.silicon, 280, F.fi("palladium-plate"), 145, F.fi("lux"), 235, Items.surgealloy, 320));
- 
-TechTree.create(Blocks.duo, Dbl);
-TechTree.create(Dbl, t);
+SunAbsorber.activeSound = SO.beamLaser;
+SunAbsorber.activeSoundVolume = 3.0;
+SunAbsorber.shootSound = SO.beamShoot;
+SunAbsorber.shootShake = 5.0;
+
+////////
+///////
+
+F.techNode(Blocks.duo, Discharge, ItemStack.with());
+F.techNode(Discharge, Thunder, ItemStack.with(F.fi("topaz"), 45000, Items.silicon, 30000, F.fi("cutol"), 25000, F.fi("lux"), 25000, Items.surgeAlloy, 37500, Items.phaseFabric, 22000));
+F.techNode(Thunder, SunAbsorber, ItemStack.with(F.fi("topaz"), 115000, F.fi("laculis"), 28000, F.fi("lux"), 32500, F.fi("meteorite"), 27500, Items.silicon, 50000, Items.phaseFabric, 35000, Items.surgeAlloy, 48000, F.fi("contritum"), 50000));

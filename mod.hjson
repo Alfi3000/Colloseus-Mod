@@ -2,7 +2,7 @@
     name: "collos" 
     displayName: "[#EA64FF]Colloseus [white]mod[][]"
     author: "[white]ASD[]"
-    description: ""
+    description: "\n\n[white]Этот мод добавляет [#A1FFA9]много всего нового[], например:\n  [#65AAFF]Новые турели и юниты,[]\n  [#65AAFF]Новые карты в компании,[]\n  [#65AAFF]Новые жидкости и предметы[]\n\n\n[#5a97db]VK[] автора: [#FFF67E]@heavcreate[]\n[#5a97db]VK[] мода: [#FFF67E]@mindusty_collosseus[]\n\nС модом помогали: [#FF7ED0]Qwaka[], [#00FA9A]Gori[#66CDAA]lla_[#7FFFD4]Glue[][][] и [gold]KOCTOLOM[][]"
     version: "1.0.0"
     minGameVersion: 105
 }

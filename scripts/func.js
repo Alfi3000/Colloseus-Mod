@@ -1,7 +1,12 @@
 module.exports = {	
+    name: null, 
     techNode(parent, block, requirements){
         var neededParent = TechTree.all.find(node => node.content == parent);
         new TechTree.TechNode(neededParent, block, requirements);
+	}, 
+
+    tex(name) {
+	    return Core.atlas.find("collos-"+name);
 	}, 
 
     c(string) {
@@ -10,6 +15,11 @@ module.exports = {
 
     fi(name) {
 	    return Vars.content.getByName(ContentType.item, "collos-"+name);
+	},
+
+    fs(index) {	
+        var spriteName = "collos-"+this.name+index;
+	    return spriteName;
 	}, 
 
     fu(name) {

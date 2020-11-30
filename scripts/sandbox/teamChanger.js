@@ -27,7 +27,6 @@ TeamChanger.buildType = prov(() => extend(Building, {
 	}
 }));
 
-print(TeamChanger.buildVisibility);
 TeamChanger.configurable = true;
 TeamChanger.size = 2;
 TeamChanger.health = 100;

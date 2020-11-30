@@ -38,6 +38,7 @@ no("ore-meteorite", F.fi("meteorite"));
 
 nb("dirt-rocks");
 nb("jungle-wall");
+nb("blass-wall");
 nb("lights-block");
 nb("purple-block");
 nb("crimzes-block");
@@ -45,6 +46,7 @@ nb("salts-block");
 
 nf("dirt", Items.sand, null, true, 0.8, 2.0, 3);
 nf("jungle-floor", null, null, true, 1.0, 1.0, 4);
+nf("blass", null, null, true, 1.0, 1.0, 3);
 nf("lights-floor", null, null, true, 1.0, 1.0, 3);
 nf("purple-floor", null, null, true, 1.0, 1.0, 3);
 nf("crimzes-floor", null, null, true, 1.0, 1.0, 3);

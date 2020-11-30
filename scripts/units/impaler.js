@@ -2,7 +2,7 @@ const F = require("func");
 const C = this.global.COLORS;
 const E = this.global.EFFECTS;
 
-const FragYellowBall = extend(ArtilleryBulletType, {
+const FragYellowBall = extend(BasicBulletType, {
     draw(b) {
         Draw.color(this.backColor);
         Fill.circle(b.x, b.y, 4.0 + b.fout()*5.0);
@@ -34,7 +34,7 @@ FragYellowBall.lightningLength = 13;
 FragYellowBall.lightningLengthRand = 6;
 FragYellowBall.lightningColor = C.energy;
 
-const ImpalerBullet = extend(ArtilleryBulletType, {
+const ImpalerBullet = extend(BasicBulletType, {
     draw(b) {
         Draw.color(this.backColor);
         Fill.circle(b.x, b.y, 4.5 + b.fout()*6.0);
@@ -67,7 +67,7 @@ ImpalerBullet.lightningDamage = 40;
 ImpalerBullet.lightningLengthRand = 4;
 ImpalerBullet.lightningColor = C.energy;
 
-const GiantYellowBall = extend(ArtilleryBulletType, {
+const GiantYellowBall = extend(BasicBulletType, {
     draw(b) {
         Draw.color(this.backColor);
         Fill.circle(b.x, b.y, 8.0 + b.fout()*12.0);

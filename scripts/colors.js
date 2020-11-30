@@ -4,6 +4,9 @@ this.global.COLORS.energyLight = Color.valueOf("#FFEF75");
 this.global.COLORS.crystalizerDecal = Color.valueOf("#C05D5C");
 this.global.COLORS.crystalizerDecalLight = Color.valueOf("F6AE7B");
 
+this.global.COLORS.NorthernLightsColor = Color.valueOf("F283FF");
+this.global.COLORS.NorthernLightsNoiseColor = Color.valueOf("13FFE9");
+
 this.global.COLORS.standartBlockLight = Color.valueOf("B0BAC0");
 this.global.COLORS.standartBlock = Color.valueOf("989AA4");
 this.global.COLORS.standartBlockDark = Color.valueOf("6E7080");
@@ -47,6 +50,7 @@ this.global.COLORS.angelDark = this.global.COLORS.diamondDark = Color.valueOf("C
 
 this.global.COLORS.magicLight = Color.valueOf("FF99D8");
 this.global.COLORS.magic = Color.valueOf("FF009D");
+this.global.COLORS.magicDark = Color.valueOf("BE0097");
 
 this.global.COLORS.unitOrangeLight = Color.valueOf("F6AE7B");
 this.global.COLORS.unitOrange = Color.valueOf("E58575");
