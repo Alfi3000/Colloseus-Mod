@@ -9,5 +9,5 @@ This mod is entirely made up of scripts. The scripts and nothing more. Enjoy.
 **Current mod version - 1.0.2beta**
 
 ![Logo](sprites-override/ui/logo.png)
-
-![alt tag](https://vk.com/photo506001149_457245291 "Screenshot")​
+ 
+![alt tag](https://drive.google.com/file/d/1lN8iE2AY3r5uXtC6KiiKlzKAygjct9JG/view?usp=drivesdk "Screenshot")​
