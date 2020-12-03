@@ -17,4 +17,4 @@ This mod is entirely made up of scripts. The scripts and nothing more. Enjoy.
 
 ![alt tag](https://sun9-15.userapi.com/impg/KwxgSTroImspVcXpcGD45iNPoqy5J0xF-RoYlw/y_P-LQLRv-8.jpg?size=1080x480&quality=96&proxy=1&sign=3c955e22117cf4ff52a725a1a83b2602 "The largest unit in modification - leviathan")
 
-![alt tag](https://sun9-40.userapi.com/impg/dmxLdPwhUioWRRYGam5CHAQ5uNFowvr_dBOf6Q/aIlZYSo0Io0.jpg?size=522x1080&quality=96&proxy=1&sign=ca2608ed6f86f852db89de31fd94c72c "Energy faction attack")
+![alt tag](https://sun9-40.userapi.com/impg/dmxLdPwhUioWRRYGam5CHAQ5uNFowvr_dBOf6Q/aIlZYSo0Io0.jpg?size=522x600&quality=96&proxy=1&sign=ca2608ed6f86f852db89de31fd94c72c "Energy faction attack")
