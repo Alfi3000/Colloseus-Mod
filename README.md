@@ -10,4 +10,4 @@ This mod is entirely made up of scripts. The scripts and nothing more. Enjoy.
 
 ![Logo](sprites-override/ui/logo.png)
 
-![alt tag](https://yandex.ru/images/touch/search?cbir_id=4110108%2FJJ-rIDE6_IsNMx66J1IBcg4097&rpt=imageview&redircnt=1607019277.2&url=https%3A%2F%2Favatars.mds.yandex.net%2Fget-images-cbir%2F4110108%2FJJ-rIDE6_IsNMx66J1IBcg4097%2Forig&cbir_page=similar&ts=1607019318802 "Описаний")
+![alt tag](https://sun9-32.userapi.com/impg/B3FzPuhh-G32vI4DtDAqZHV53osAK5ljFNaeeQ/QBGrnTRUII8.jpg?size=1080x882&quality=96&proxy=1&sign=2298276508da899aa9f81a7aa499e9be "Описаний")
