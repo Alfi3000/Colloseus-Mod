@@ -8,9 +8,9 @@ This mod is entirely made up of scripts. The scripts and nothing more. Enjoy.
 
 **Current mod version - 1.1**
 
-![Logo](sprites-override/ui/logo.png)
-
 Our [discord](https://discord.gg/9qs5yxyb)!
+
+![Logo](sprites-override/ui/logo.png)
 
 ## Mod Screenshots
 
