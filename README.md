@@ -10,6 +10,7 @@ This mod is entirely made up of scripts. The scripts and nothing more. Enjoy.
 
 ![Logo](sprites-override/ui/logo.png)
 
+Our [discord](https://discord.gg/9qs5yxyb)!
 
 ## Mod Screenshots
 
