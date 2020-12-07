@@ -8,7 +8,7 @@ This mod is entirely made up of scripts. The scripts and nothing more. Enjoy.
 
 **Current mod version - 1.1**
 
-Our [discord](https://discord.gg/9qs5yxyb)!
+Our discord!
 
 ![Logo](sprites-override/ui/logo.png)
 
