@@ -45,7 +45,7 @@ SmallHealBullet.despawnEffect = E.greenTinyHit;
 
 SmallHealBullet.shootEffect = Fx.none;
 SmallHealBullet.smokeEffect = Fx.none;
-SmallHealBullet.damage = 80;
+SmallHealBullet.damage = 140;
 SmallHealBullet.height = 7.0;
 SmallHealBullet.width = 1.7;
 
@@ -62,6 +62,38 @@ SmallHealBullet.healPercent = 5.0;
 SmallHealBullet.backColor = Pal.heal;
 SmallHealBullet.frontColor = Color.white;
 
+function createSwords(x, y, rot, amount, speed, offset) {
+	const Swords = extend(BasicBulletType, {
+	    draw(b) {
+	        var v = new Vec2();
+	        var v2 = new Vec2();
+	        for(var i = 0; i < amount; i++) {
+		        v.trns(i*(360.0/amount), offset);
+		        Drawf.tri(b.x - v.x, b.y - v.y, 8, 24, v.angle()); 
+		
+		        v2.trns(i*(360.0/amount), offset - offset / 3.0);
+		        Lines.lineAngle(b.x - v2.x, b.y - v2.y, v.angle(), offset + offset / 3.0 ); 
+	        } 
+	    } 
+	});
+	Swords.hitEffect = E.greenTinyHit;
+	Swords.despawnEffect = E.greenTinyHit;
+	
+	Swords.shootEffect = Fx.none;
+	Swords.smokeEffect = Fx.none;
+	Swords.damage = 140;
+	
+	Swords.absorbable = false;
+	Swords.reflectable = false;
+	Swords.hittable = false;
+	
+	Swords.speed = 0.0;
+	Swords.lifetime = 150;
+	Swords.hitSize = 4.0;
+	
+	return Swords
+} 
+
 const FireArtilleryBullet = extend(ArtilleryBulletType, {
     draw(b) {
         Draw.color(C.unitOrangeLight, C.unitOrangeDark, b.fin());
@@ -73,7 +105,7 @@ FireArtilleryBullet.despawnEffect = E.redArtilleryHit;
 
 FireArtilleryBullet.shootEffect = Fx.none;
 FireArtilleryBullet.smokeEffect = Fx.none;
-FireArtilleryBullet.damage = 200;
+FireArtilleryBullet.damage = 400;
 FireArtilleryBullet.height = 6.0;
 FireArtilleryBullet.width = 1.7;
 
@@ -81,8 +113,8 @@ FireArtilleryBullet.status = S.curse;
 FireArtilleryBullet.statusDuration = 60.0 * 15.0;
 FireArtilleryBullet.hitSound = Sounds.explosion;
 
-FireArtilleryBullet.splashDamageRadius = 40;
-FireArtilleryBullet.splashDamage = 150;
+FireArtilleryBullet.splashDamageRadius = 50;
+FireArtilleryBullet.splashDamage = 300;
 
 FireArtilleryBullet.incendChance = 0.2;
 FireArtilleryBullet.incendSpread = 18.0;
@@ -128,7 +160,7 @@ MissileBullet.despawnEffect = Fx.none;
 
 MissileBullet.shootEffect = Fx.none;
 MissileBullet.smokeEffect = Fx.none;
-MissileBullet.damage = 90;
+MissileBullet.damage = 180;
 MissileBullet.height = 20.0;
 MissileBullet.width = 10.0;
 
@@ -144,7 +176,7 @@ MissileBullet.lightningColor = C.unitOrangeDark;
 MissileBullet.lightning = 2;
 MissileBullet.lightningLength = 4;
 MissileBullet.lightningLengthRand = 4;
-MissileBullet.lightningDamage = 60;
+MissileBullet.lightningDamage = 120;
 
 MissileBullet.knockback = 0.7;
 MissileBullet.homingPower = 0.5;
@@ -179,10 +211,10 @@ const GiantRedLaser = extend(ContinuousLaserBulletType, {
 
         Lines.lineAngle(b.x, b.y, b.rotation(), baseLen);
         for(var s = 0; s < this.colors.length; s++){
-            Draw.color(Tmp.c1.set(this.colors[s]).mul(1.0 + Mathf.absin(Time.time(), 1.0, 0.1)));
+            Draw.color(Tmp.c1.set(this.colors[s]).mul(1.0 + Mathf.absin(Time.time, 1.0, 0.1)));
             for(var i = 0; i < this.tscales.length; i++){
                 Tmp.v1.trns(b.rotation() + 180.0, (this.lenscales[i] - 1.0) * 35.0);
-                Lines.stroke((this.width + Mathf.absin(Time.time(), this.oscScl, this.oscMag)) * fout * this.strokes[s] * this.tscales[i]);
+                Lines.stroke((this.width + Mathf.absin(Time.time, this.oscScl, this.oscMag)) * fout * this.strokes[s] * this.tscales[i]);
                 Lines.lineAngle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rotation(), baseLen * this.lenscales[i], false);
             }
         };
@@ -223,7 +255,7 @@ GiantRedLaser.drawSize = 1070.0;
 GiantRedLaser.length = 800.0;
 GiantRedLaser.width = 40.0;
 GiantRedLaser.lifetime = 600.0;
-GiantRedLaser.damage = 600;
+GiantRedLaser.damage = 1200;
 
 GiantRedLaser.hitSize = 40.0;
 GiantRedLaser.shake = 5.0;
@@ -260,7 +292,7 @@ EnergyShrapnelBullet.despawnEffect = Fx.none;
 
 EnergyShrapnelBullet.shootEffect = E.energyShrapnelShoot;
 EnergyShrapnelBullet.smokeEffect = E.energyShrapnelSmoke;
-EnergyShrapnelBullet.damage = 480;
+EnergyShrapnelBullet.damage = 960;
 EnergyShrapnelBullet.length = 280.0;
 EnergyShrapnelBullet.width = 15.0;
 
@@ -289,7 +321,7 @@ EnergyShrapnelBullet.splashDamage = 0.0;
 
 const PierceBullet = extend(BasicBulletType, {});
 PierceBullet.speed = 10.5; 
-PierceBullet.damage = 120;
+PierceBullet.damage = 240;
 PierceBullet.pierceBuilding = true;
 PierceBullet.reflectable = false;
 PierceBullet.pierceCap = 4;
@@ -379,13 +411,21 @@ const Leviathan = extendContent(UnitType, "leviathan", {
     _largeDistortions: largeDistortions, 
     _distortions: distortions,
     draw(unit){
+    	if(Mathf.random() >= 0.99) { 
+    	    var rot = unit.rotation-90;
+    	    var v = new Vec2();
+            v.trns(Mathf.random() >= 0.5 ? rot - 90 : rot + 90, Mathf.random() >= 0.5 ? 40 + Mathf.random(40.0) : -40 - Mathf.random(40.0));
+            
+            createSwords(unit.x + v.x, unit.y + v.x, Mathf.round(Mathf.random(8.0)), 3.0, 12.0);
+    	};
+    
         var z = unit.elevation > 0.5 ? (this.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : this.groundLayer + Mathf.clamp(this.hitSize / 4000.0, 0, 0.01);
 
-        unit.heal(10.0/6.0);
+        unit.heal(150.0/60.0);
         
         Draw.z(Math.max(10, z - 15));
         Draw.color(Pal.shadow);
-        var e = (unit.health/4000.0)/10.0;
+        var e = (unit.health/4000.0)/20.0;
         Draw.rect(Vars.content.getByName(ContentType.unit, "collos-leviathan").icon(Cicon.full), unit.x - e, unit.y - e, unit.rotation - 90);
         Draw.color();
 
@@ -412,9 +452,9 @@ const Leviathan = extendContent(UnitType, "leviathan", {
 
         //draw back items
         if(unit.item() != null && unit.itemTime > 0.01){
-            var size = (this.itemSize + Mathf.absin(Time.time(), 5.0, 1.0)) * unit.itemTime;
+            var size = (this.itemSize + Mathf.absin(Time.time, 5.0, 1.0)) * unit.itemTime;
 
-            Draw.mixcol(Pal.accent, Mathf.absin(Time.time(), 5.0, 0.5));
+            Draw.mixcol(Pal.accent, Mathf.absin(Time.time, 5.0, 0.5));
             Draw.rect(unit.item().icon(Cicon.medium),
             unit.x + Angles.trnsx(unit.rotation + 180.0, this.itemOffsetY),
             unit.y + Angles.trnsy(unit.rotation + 180.0, this.itemOffsetY),
@@ -426,7 +466,7 @@ const Leviathan = extendContent(UnitType, "leviathan", {
             Lines.circle(
             unit.x + Angles.trnsx(unit.rotation + 180.0, this.itemOffsetY),
             unit.y + Angles.trnsy(unit.rotation + 180.0, this.itemOffsetY),
-            (3.0 + Mathf.absin(Time.time(), 5.0, 1.0)) * unit.itemTime);
+            (3.0 + Mathf.absin(Time.time, 5.0, 1.0)) * unit.itemTime);
 
             if(unit.isLocal() && !Vars.renderer.pixelator.enabled()){
                 Fonts.outline.draw(unit.stack.amount + "",
@@ -467,13 +507,13 @@ const Leviathan = extendContent(UnitType, "leviathan", {
         v.trns(unit.rotation, 7);
 
         var speed = Mathf.clamp(25000.0/unit.health, 0.0, 2.5);
-		var size = 1.0 + Mathf.sin(Time.time()*(speed)) * 0.1;
+		var size = 1.0 + Mathf.sin(Time.time*(speed)) * 0.1;
 		var speed2 = 1.0 + speed * 0.05;
         var speed2 = Mathf.clamp(speed2, 1.0, 25000000.0);
 
         Draw.xscl = size*0.85;
         Draw.yscl = size*0.85;
-        Draw.rect(Core.atlas.find("collos-black-hole-base"), unit.x - v.x, unit.y - v.y, Time.time()); 
+        Draw.rect(Core.atlas.find("collos-black-hole-base"), unit.x - v.x, unit.y - v.y, Time.time); 
         Draw.xscl = 1.0;
         Draw.yscl = 1.0;
         for(var i = 0; i < this._distortions.length; i++) {
@@ -513,7 +553,7 @@ const Leviathan = extendContent(UnitType, "leviathan", {
         Draw.yscl = 1.0;
     }
 });
-Leviathan.health = 400000;
+Leviathan.health = 1000000;
 Leviathan.hitSize = 140;
 Leviathan.range = 1000;
 Leviathan.mass = 150;
@@ -757,9 +797,12 @@ Leviathan.weapons.add(
 ); 
 
 Leviathan.constructor = () => { 
-	const unit = extend(UnitWaterMove, {});
+	const unit = extend(UnitWaterMove, {
+	    damage(amount){
+		     this.super$damage(amount/10.0)
+	    }
+	});
 	
-	print(Vars.maps.byName("ice-cave"));
 	return unit
 };
 
@@ -768,11 +811,7 @@ Leviathan.ammoCapacity = 3250;
 Leviathan.trailX = 37.0;
 Leviathan.trailY = -104.0;
 Leviathan.trailScl = 3.5;
-Leviathan.trailXTwo = 74.0;
-Leviathan.trailYTwo = -80.0;
 Leviathan.trailLength = 120.0;
-Leviathan.trailSclTwo = 5.0;
-Leviathan.trailLengthTwo = 300.0;
 Leviathan.trailColor = Blocks.water.mapColor.cpy().mul(1.5);
 
 Leviathan.targetFlag = BlockFlag.generator;

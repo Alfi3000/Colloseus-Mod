@@ -70,7 +70,7 @@ TeleportPad.buildType = () => {
 	    drawConfigure(){
 	        Drawf.dashCircle(this.x, this.y, 60.0*Vars.tilesize, Pal.accent);
 	
-	        var sin = Mathf.absin(Time.time(), 6.0, 1.0);
+	        var sin = Mathf.absin(Time.time, 6.0, 1.0);
 	        Drawf.circles(this.x, this.y, (this.block.size / 2.0 + 1.0) * Vars.tilesize + sin - 2.0, Pal.accent);
 	        
 	        var other = this.getLink();
@@ -83,7 +83,7 @@ TeleportPad.buildType = () => {
 			Draw.rect(F.tex("teleport-pad"), this.x, this.y);
 			
 			Draw.color(Pal.accent);
-			Draw.alpha(0.5 + Mathf.sin(Time.time() * 0.25) * 0.1);
+			Draw.alpha(0.5 + Mathf.sin(Time.time * 0.25) * 0.1);
 			Draw.rect(F.tex("teleport-pad-light"), this.x, this.y);
 			Draw.alpha(1.0);
 			Draw.color();

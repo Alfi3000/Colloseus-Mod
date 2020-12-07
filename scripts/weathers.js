@@ -76,3 +76,30 @@ NorthernLights.attrs.set(Attribute.heat, -0.7);
 NorthernLights.attrs.set(Attribute.spores, 0.2);
 
 W.northernLights = NorthernLights;
+
+/////
+/////
+/////
+
+const AshRain = extendContent(ParticleWeather, "ash-rain", {});
+AshRain.baseSpeed = 0.15;
+AshRain.xspeed = -0.42;
+AshRain.yspeed = -0.42;
+
+AshRain.minAlpha = 0.0;
+AshRain.maxAlpha = 0.2;
+AshRain.sizeMin = 10.0;
+AshRain.sizeMax = 40.0;
+AshRain.color = Color.valueOf("#343434");
+
+AshRain.drawParticles = true;
+AshRain.drawNoise = false;
+AshRain.useWindVector = false;
+
+AshRain.attrs.set(Attribute.light, -0.2);
+AshRain.attrs.set(Attribute.heat, -0.1);
+AshRain.attrs.set(Attribute.spores, -0.2);
+AshRain.attrs.set(Attribute.oil, -0.2);
+AshRain.attrs.set(Attribute.water, -0.45);
+
+W.northernLights = AshRain;

@@ -40,7 +40,7 @@ windmill.buildType = prov(() => {
 	       
 	        var z = Draw.z();
 	        Draw.z(Layer.blockOver);
-	        Draw.rect(Core.atlas.find("collos-windmill-generator-rotator"), this.x, this.y, Time.time()*3);
+	        Draw.rect(Core.atlas.find("collos-windmill-generator-rotator"), this.x, this.y, Time.time*3);
 	        Draw.z(z);
 	    }, 
 	
@@ -72,7 +72,7 @@ windmillLarge.buildType = prov(() => {
 	       
 	        var z = Draw.z();
 	        Draw.z(Layer.blockOver);
-	        Draw.rect(Core.atlas.find("collos-windmill-generator-large-rotator"), this.x, this.y, Time.time()*3);
+	        Draw.rect(Core.atlas.find("collos-windmill-generator-large-rotator"), this.x, this.y, Time.time*3);
 	        Draw.z(z);
 	    }, 
 	

@@ -12,7 +12,7 @@ function newItem(name, color, hardness, cost, flammability, radioactivity, explo
 
 const emerald = newItem("emerald", "#21FF00", 1.0, 0.5, 0.0, 0.0, 0.0);
 const diamond = newItem("diamond", "#EFFFFF", 1.0, 0.5, 0.0, 0.0, 0.0);
-const ruby = newItem("ruby", "#FF3B4A", 1.0, 0.5, 0.0, 0.0, 0.0);
+const ruby = newItem("ruby", "#FF3B4A", 1.0, 0.5, 0.3, 0.0, 0.0);
 const amethyst = newItem("amethyst", "#CD00FF", 1.0, 0.5, 0.0, 0.0, 0.0);
 const sapphire = newItem("sapphire", "#008BFF", 1.0, 0.5, 0.0, 0.0, 0.0);
 const topaz = newItem("topaz", "#FFE200", 1.0, 0.5, 0.0, 0.0, 0.0); 

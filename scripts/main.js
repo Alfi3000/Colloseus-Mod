@@ -22,8 +22,11 @@ require("blocks/drills/drills");
 
 require("blocks/storage/safe");
 
+//require("blocks/turrets/flood");
 require("blocks/turrets/purples");
 require("blocks/turrets/yellows");
+require("blocks/turrets/diamonds");
+require("blocks/turrets/reds");
 
 require("blocks/walls/walls");
 

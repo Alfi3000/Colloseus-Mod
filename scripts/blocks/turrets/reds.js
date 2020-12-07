@@ -1,8 +1,51 @@
-const B = this.global.BULLETS;
-const F = require("functions/f");
+const F = require("func");
+const E = this.global.EFFECTS;
 
-const Fox = extendContent(ItemTurret, "firefox", {});
+const createFireBullet = item => {
+	const bullet = extend(BasicBulletType, {
+	    hit(b, x, y){
+	    	this.hitEffect.at(b.x, b.y, b.rotation(), this.hitColor);
+	        this.hitSound.at(b);
+        
+	        Damage.createIncend(b.x, b.y, Mathf.clamp(item.flammability*5.0, 2.0, 12.0), Mathf.clamp(Mathf.round(item.flammability*5.0), 0, 10));
+	    }, 
 
+	    despawned(b){
+	        this.hit(b, b.x, b.y);
+	    }, 
+
+		update(b){
+			this.super$update(b);
+			
+			if(Mathf.chance((Mathf.clamp(item.flammability / 2.0, 0.2, 0.6)) * Time.delta)){
+				this.trailEffect.at(b.x + Mathf.range(Mathf.clamp(item.flammability*12.0, 1.0, 8.0)), b.y + Mathf.range(Mathf.clamp(item.flammability*12.0, 1.0, 8.0)), b.rotation);
+			};
+		},
+		
+		draw(b){
+			Draw.color(Pal.lightFlame, Pal.darkFlame, b.fin());
+			Fill.circle(b.x, b.y, Mathf.clamp(item.flammability) + b.fin() * Mathf.clamp(item.flammability, 0.0, 3.0)*1.5);
+			Draw.reset();
+		}
+	});
+	bullet.damage = 10.0 + item.flammability * 10.0;
+	bullet.speed = 2.5;
+	bullet.lifetime = 45;
+	bullet.statusDuration = Mathf.clamp(item.flammability * 300.0, 60.0, 300.0);
+	bullet.status = StatusEffects.burning;
+	bullet.collides = true;
+	bullet.collidesTiles = true;
+	bullet.collidesAir = true;
+	bullet.pierce = true;
+	bullet.trailEffect = Fx.ballfire;
+	bullet.hitEffect = Fx.hitFlameSmall;
+	bullet.despawnEffect = Fx.none;
+	bullet.hitColor = Pal.darkFlame;
+	bullet.shootEffect = Fx.none;
+	return bullet
+} 
+	
+const Fox = extendContent(ItemTurret, "fox", {});
 Fox.size = 2;
 Fox.health = 1850;
 Fox.reload = 6;
@@ -11,51 +54,20 @@ Fox.inaccuracy = 10;
 Fox.recoil = 2.5;
 Fox.rotatespeed = 3.5;
 Fox.shootSound = Sounds.flame;
-Fox.ammo(Items.coal, B.foxCoal, F.fi("ruby"), B.foxRuby, Items.pyratite, B.foxPyratite);
-Fox.requirements(Category.turret, ItemStack.with(F.fi("ruby"), 75, Items.silicon, 45, Items.copper, 60));
 
-const Napalm = extendContent(ItemTurret, "ruby-napalm", {});
-Napalm.size = 3;
-Napalm.health = 3470;
-Napalm.reload = 5;
-Napalm.range = 180;
-Napalm.inaccuracy = 5;
-Napalm.recoil = 2;
-Napalm.xRand = 8;
-Napalm.velocityInaccuracy = 0.2;
-Napalm.velocityRnd = 0.2;
-Napalm.shootSound = Sounds.flame;
-Napalm.ammo(Items.coal, B.napalmCoal, F.fi("ruby"), B.napalmRuby, Items.pyratite, B.napalmPyratite, Items.blastCompound, B.napalmBlast);
-Napalm.requirements(Category.turret, ItemStack.with(F.fi("ruby"), 120, F.fi("lead-plate"), 50, Items.silicon, 80, Items.plastanium, 65));
+var ammo = new ObjectMap();
+Vars.content.items().each(
+    cons(item => { 
+		if(item.flammability >= 0.5 || item.name == "collos-ruby") ammo.put(item, createFireBullet(item));
+	})
+);
+Fox.ammoTypes = ammo;
+Fox.buildVisibility = BuildVisibility.shown;
+Fox.category = Category.turret 
+Fox.requirements = ItemStack.with(F.fi("ruby"), 75, Items.silicon, 45, Items.copper, 60);
 
-const Twinkle = extendContent(ItemTurret, "twinkle", {
-	load(){
-	    this.super$load();
+F.techNode(Blocks.duo, Fox, ItemStack.with(F.fi("ruby"), 10000, Items.silicon, 6500, Items.copper, 8000));
 
-	    this.baseRegion = Core.atlas.find("colloseusmod-block-5");
-    }, 
-	
-	generateIcons: function(){
-		return [
-			Core.atlas.find("colloseusmod-block-" + this.size),
-			Core.atlas.find(this.name)
-		];
-    }
-});
-Twinkle.size = 5;
-Twinkle.health = 12450;
-Twinkle.reload = 5;
-Twinkle.range = 260;
-Twinkle.inaccuracy = 24;
-Twinkle.velocityInaccuracy = 0.2;
-Twinkle.velocityRnd = 0.2;
-Twinkle.recoil = 6;
-Twinkle.rotatespeed = 2.0;
-Twinkle.xRand = 2;
-Twinkle.shootSound = Sounds.flame;
-Twinkle.ammo(Items.coal, B.twinkleCoal , Items.pyratite, B.twinklePyratite, Items.blastCompound, B.twinkleBlast, F.fi("ruby"), B.twinkleRuby);
-Twinkle.requirements(Category.turret, ItemStack.with(F.fi("ruby"), 435, F.fi("palladium-plate"), 230, Items.silicon, 320, Items.surgealloy, 360, Items.phasefabric, 165));
-
-TechTree.create(Blocks.duo, Fox);
-TechTree.create(Fox, Napalm);
-TechTree.create(Napalm, Twinkle);
+//////
+//////
+//////

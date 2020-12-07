@@ -1,4 +1,5 @@
 const F = require("func");
+const E = this.global.EFFECTS;
 
 const Materializer = extendContent(GenericSmelter, "materializer", {
     setStats(){
@@ -56,6 +57,8 @@ Materializer.buildType = () => {
 			        if(this.timer.get(5)){
 		                this.setTotal(0);
 		                this.offload(this.getItem())
+		
+		                E.materializerCraft.at(this.x, this.y, this.getItem().color);
 				    }
 			    }
 		    };
@@ -78,7 +81,7 @@ Materializer.buildType = () => {
 			Draw.rect(Core.atlas.find("collos-materializer"), this.x, this.y);
 	        if(this.getItem() != null) {
 				Draw.color(this.getItem().color);
-				Draw.alpha(0.5 + Mathf.sin(Time.time()*0.1)*0.15);
+				Draw.alpha(0.5 + Mathf.sin(Time.time*0.1)*0.15);
 				Draw.rect(Core.atlas.find("collos-materializer-color"), this.x, this.y);
 				Draw.alpha(1.0);
 				Draw.color(); 
@@ -108,7 +111,7 @@ Materializer.buildType = () => {
 		
 		    if(item.hardness != null && item.cost != null) {
 			    if(item.hardness >= 0.1 && item.cost >= 0.1) {
-	                this.addTotal((item.hardness + item.cost)/5.0);
+	                this.addTotal((item.hardness + item.cost)/2.0);
 			        if(this.items.total() > 0) {
 	                    this.items.remove(item, this.items.total());
 					};

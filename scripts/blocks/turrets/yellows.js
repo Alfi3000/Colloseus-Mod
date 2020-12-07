@@ -11,16 +11,18 @@ const E = this.global.EFFECTS;
   
 const DischargeBullet = extend(BasicBulletType, {
     update(b){
-        Lightning.create(b, F.fi("topaz").color, 30.0, b.x, b.y, Mathf.random(360.0), 3.0 + Mathf.random(2.0))
+        Lightning.create(b, F.fi("topaz").color, 30.0, b.x, b.y, Mathf.random(360.0), 3.0 + Mathf.random(2.0));
+        
+        var build = Vars.world.build(b.x, b.y);
+        if(build instanceof Wall && build.block.insulated) b.absorb();
     }
 });
 DischargeBullet.hitEffect = E.hitMovingLaser;
 DischargeBullet.despawnEffect = Fx.none;
 DischargeBullet.pierce = false;
 DischargeBullet.hittable = false;
-DischargeBullet.absorbable = false
+DischargeBullet.absorbable = true
 DischargeBullet.reflectable = false;
-DischargeBullet.collides = false;
 DischargeBullet.damage = 60;
 DischargeBullet.speed = 3.0;
 DischargeBullet.lifetime = 90;
@@ -28,13 +30,14 @@ DischargeBullet.hitSize = 14;
 DischargeBullet.width = 15;
 DischargeBullet.height = 15;
 
+DischargeBullet.hitColor = F.fi("topaz").color;
 DischargeBullet.frontColor = F.fi("topaz").color;
 DischargeBullet.backColor = F.fi("topaz").color.cpy().mul(0.8);
  
 const Discharge = extendContent(PowerTurret, "discharge", {});
 Discharge.shootType = DischargeBullet;
 Discharge.shootSound = Sounds.railgun;
-Discharge.shootEffect = E.thunderShoot;
+Discharge.shootEffect = E.dischargeShoot;
 Discharge.powerUse = 800.0/60.0;
 Discharge.reloadTime = 60.0;
 Discharge.ammoUseEffect = Fx.none;
@@ -82,12 +85,15 @@ const MovingLaser = extend(BasicBulletType, {
         if(Beams[Beams.length-1][4][0] < 0.98); Beams[Beams.length-1][4][0] += 0.2 * Time.delta;
         
     	if(b.data == null) return;
-    	if(b.timer.get(1) && b.data[1] > Beams.length * 24.0) {
+    	if(b.timer.get(1) && b.data[1] > Beams.length * 32.0 && b.data[6]) {
     	    var v = new Vec2();
-            v.trns(b.rotation() + Mathf.range(20.0), 24.0);
+            
+            var realLength = this.findLaserLength(b, 32.0, v);
+            v.trns(b.rotation() + Mathf.range(20.0), realLength);
              
             E.movingLaserOnExtend.at(PredBeam[2], PredBeam[3], Angles.angle(PredBeam[2], PredBeam[3], PredBeam[2] + v.x, PredBeam[3] + v.y));
             Beams.push([PredBeam[2], PredBeam[3], PredBeam[2] + v.x, PredBeam[3] + v.y, [0.0, 1.0]]);
+            if(realLength < 32.0) b.data[6] = false;
         };
         
         for(var i = 0; i < Beams.length; i++) { 
@@ -95,15 +101,39 @@ const MovingLaser = extend(BasicBulletType, {
             
 	    	Damage.collideLine(b, b.team, Fx.none, Beam[0], Beam[1], Angles.angle(Beam[0], Beam[1], Beam[2], Beam[3]), 24.0);
         }
-    }, 
+    },
+
+    findLaserLength(b, length, v){
+        var PredBeam = b.data[2][b.data[2].length - 1];
+        
+        Tmp.v1.trns(Angles.angle(PredBeam[2], PredBeam[3], PredBeam[2] + v.x, PredBeam[3] + v.y), length);
+
+        var furthest = null;
+
+        var found = Vars.world.raycast(
+            World.toTile(PredBeam[2]), 
+            World.toTile(PredBeam[3]), 
+            World.toTile(PredBeam[2] + v.x), 
+            World.toTile(PredBeam[3] + v.y), 
+            new World.Raycaster({accept: (x, y) => {
+                furthest = Vars.world.build(x, y);
+                
+                if(furthest != null && furthest.team != b.team && (furthest.block.absorbLasers || furthest.block.insulated)) return true;
+                return false;
+            }}) 
+        );
+
+        return found && furthest != null ? Math.max(6.0, Mathf.dst(PredBeam[2], PredBeam[3], furthest.tile.worldx(), furthest.tile.worldy())) : length;
+    },
     
     despawned(b) {
         this.hitSound.at(b);
     
     	b.data = null;
-    }, 
+    } 
 });
 
+MovingLaser.hitColor = F.fi("topaz").color;
 MovingLaser.hitEffect = E.hitMovingLaser;
 MovingLaser.despawnEffect = Fx.none;
 MovingLaser.pierce = false;
@@ -137,7 +167,7 @@ Thunder.buildType = () => {
             var by = this.y + this.block.tr.y;
             
             var lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(bx, by, this.targetPos.x, this.targetPos.y) / type.range(), this.block.minRange / type.range(), this.blck.range / type.range()) : 1.0;
-            var length = 16;
+            var length = 28;
             
             var bu = type.create(this, this.team, bx, by, angle, 1.0 + Mathf.range(this.block.velocityInaccuracy), lifeScl);
             
@@ -147,7 +177,7 @@ Thunder.buildType = () => {
             var bx2 = bx + v.x;
             var by2 = by + v.y;
             
-            bu.data = [angle, 360.0, [[bx, by, bx2, by2, [0.0, 1.0]]], length, bx, by];
+            bu.data = [angle, 360.0, [[bx, by, bx2, by2, [0.0, 1.0]]], length, bx, by, true];
         }
 	});
 	return ent;
@@ -180,10 +210,10 @@ const SunAbsorberLaser = extend(ContinuousLaserBulletType, {
         
         for(var i = 0; i < 2; i++) {
 	        var v = new Vec2();
-	        v.trns(b.rotation(), Mathf.random(25.0, 810.0));
+	        v.trns(b.rotation(), Mathf.random(25.0, 510.0));
 	
 	        var rot = Mathf.random(1.0) >= 0.5 ? 45 : -45;
-	        Lightning.create(b.team, C.energy, 75, b.x + v.x, b.y + v.y, b.rotation()+(rot), Mathf.random(15, 20));
+	        Lightning.create(b.team, C.energy, 75, b.x + v.x, b.y + v.y, b.rotation()+(rot), Mathf.random(5, 10));
         };
 
         if(b.timer.get(1, 8)){
@@ -202,10 +232,10 @@ const SunAbsorberLaser = extend(ContinuousLaserBulletType, {
 
         Lines.lineAngle(b.x, b.y, b.rotation(), baseLen);
         for(var s = 0; s < this.colors.length; s++){
-            Draw.color(Tmp.c1.set(this.colors[s]).mul(1.0 + Mathf.absin(Time.time(), 1.0, 0.1)));
+            Draw.color(Tmp.c1.set(this.colors[s]).mul(1.0 + Mathf.absin(Time.time, 1.0, 0.1)));
             for(var i = 0; i < this.tscales.length; i++){
                 Tmp.v1.trns(b.rotation() + 180.0, (this.lenscales[i] - 1.0) * 35.0);
-                Lines.stroke((this.width + Mathf.absin(Time.time(), this.oscScl, this.oscMag)) * fout * this.strokes[s] * this.tscales[i]);
+                Lines.stroke((this.width + Mathf.absin(Time.time, this.oscScl, this.oscMag)) * fout * this.strokes[s] * this.tscales[i]);
                 Lines.lineAngle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rotation(), baseLen * this.lenscales[i], false);
             }
         };
@@ -219,8 +249,8 @@ const SunAbsorberLaser = extend(ContinuousLaserBulletType, {
 
 SunAbsorberLaser.oscScl = 1.2;
 SunAbsorberLaser.oscMag = 0.8;
-SunAbsorberLaser.length = 900.0;
-SunAbsorberLaser.width = 28.0;
+SunAbsorberLaser.length = 600.0;
+SunAbsorberLaser.width = 18.0;
 SunAbsorberLaser.colors = [Color.valueOf("FFE93D44"), Color.valueOf("FFE93D66"), Color.valueOf("FFF43D99"), Color.white];
 SunAbsorberLaser.strokes = [1.0, 0.85, 0.7, 0.5];
 SunAbsorberLaser.tscales = [1.4, 1.1, 0.9, 0.55];
@@ -228,8 +258,8 @@ SunAbsorberLaser.lenscales = [0.8, 0.92, 0.98, 1.01];
 SunAbsorberLaser.damage = 1200;
 SunAbsorberLaser.hitEffect = Fx.hitMeltdown;
 SunAbsorberLaser.despawnEffect = Fx.none;
-SunAbsorberLaser.hitSize = 28.0;
-SunAbsorberLaser.drawSize = 1100; //870+130
+SunAbsorberLaser.hitSize = 18.0;
+SunAbsorberLaser.drawSize = 700; //570+130
 SunAbsorberLaser.shootEffect = Fx.none;
 SunAbsorberLaser.smokeEffect = Fx.none;
 SunAbsorberLaser.hittable = false;
@@ -257,17 +287,19 @@ SunAbsorber.update = true;
 SunAbsorber.health = 34500;
 SunAbsorber.size = 8;
 SunAbsorber.reloadTime = 1200;
+
 SunAbsorber.chargeTime = 300;
 SunAbsorber.chargeEffects = 20;
 SunAbsorber.chargeBeginEffect = E.YellowBeamChargeBegin;
 SunAbsorber.chargeBegin = E.YellowBeamCharge;
 SunAbsorber.chargeMaxDelay = 300;
+
 SunAbsorber.coolantMultiplier = 2.0;
 SunAbsorber.shootDuration = 600;
 SunAbsorber.firingMoveFract = 0.0;
 SunAbsorber.hasPower = true;
 SunAbsorber.hasLiquids = true;
-SunAbsorber.range = 870;
+SunAbsorber.range = 570;
 SunAbsorber.ammoUseEffect = Fx.none;
 SunAbsorber.rotateSpeed = 0.4;
 SunAbsorber.recoilAmount = 5.0;
@@ -276,7 +308,7 @@ SunAbsorber.powerUse = 225;
 SunAbsorber.buildCostMultiplier = 0.3;
 SunAbsorber.consumes.liquid(F.fl("helium-liquid"), 0.5);
 SunAbsorber.category = Category.turret;
-SunAbsorber.requirements = ItemStack.with(F.fi("topaz"), 740, F.fi("laculis"), 230, F.fi("lux"), 320, F.fi("meteorite"), 260, Items.silicon, 550, Items.phaseFabric, 340, Items.surgeAlloy, 465, F.fi("contritum"), 540);
+SunAbsorber.requirements = ItemStack.with(F.fi("topaz"), 740, F.fi("laculis"), 460, F.fi("lux"), 640, F.fi("meteorite"), 520, Items.silicon, 550, Items.phaseFabric, 350, Items.surgeAlloy, 465, F.fi("contritum"), 540);
 
 SunAbsorber.activeSound = SO.beamLaser;
 SunAbsorber.activeSoundVolume = 3.0;
@@ -286,6 +318,6 @@ SunAbsorber.shootShake = 5.0;
 ////////
 ///////
 
-F.techNode(Blocks.duo, Discharge, ItemStack.with());
+F.techNode(Blocks.duo, Discharge, ItemStack.with(F.fi("topaz"), 15000, Items.silicon, 10000, Items.metaglass, 12000, Items.titanium, 12000));
 F.techNode(Discharge, Thunder, ItemStack.with(F.fi("topaz"), 45000, Items.silicon, 30000, F.fi("cutol"), 25000, F.fi("lux"), 25000, Items.surgeAlloy, 37500, Items.phaseFabric, 22000));
-F.techNode(Thunder, SunAbsorber, ItemStack.with(F.fi("topaz"), 115000, F.fi("laculis"), 28000, F.fi("lux"), 32500, F.fi("meteorite"), 27500, Items.silicon, 50000, Items.phaseFabric, 35000, Items.surgeAlloy, 48000, F.fi("contritum"), 50000));
+F.techNode(Thunder, SunAbsorber, ItemStack.with(F.fi("topaz"), 115000, F.fi("laculis"), 56000, F.fi("lux"), 65000, F.fi("meteorite"), 55000, Items.silicon, 50000, Items.phaseFabric, 35000, Items.surgeAlloy, 48000, F.fi("contritum"), 50000));

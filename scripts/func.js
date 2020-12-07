@@ -9,6 +9,10 @@ module.exports = {
 	    return Core.atlas.find("collos-"+name);
 	}, 
 
+    blends(build, direction) {
+	    return PayloadAcceptor.blends(build, direction);
+	}, 
+
     c(string) {
 	    return Color.valueOf(string);
 	}, 

@@ -31,7 +31,7 @@ const MaterialReactor = extendContent(ItemLiquidGenerator, "materia-reactor", {
             func(e =>
 		        new Bar(
 	                prov(() => Core.bundle.get("efficiency")+": "+e.getEfficiency()),
-			        prov(() => Tmp.c1.set(Color.valueOf("#FFE679")).lerp(Color.valueOf("#78FFFD"), Mathf.sin(Time.time()*0.03)*e.getEfficiency()/2+0.5)),
+			        prov(() => Tmp.c1.set(Color.valueOf("#FFE679")).lerp(Color.valueOf("#78FFFD"), Mathf.sin(Time.time*0.03)*e.getEfficiency()/2+0.5)),
 			        floatp(() => e.getEfficiency()/10)
 	            )
 	        )
@@ -70,7 +70,7 @@ MaterialReactor.buildType = prov(() => {
   
 	        Draw.blend(Blending.additive);
 	        Draw.color(Color.valueOf("#1F74F3"));
-            Draw.alpha(0.5 + Mathf.sin(Time.time() * this.getEfficiency() * 0.15) * 0.5);
+            Draw.alpha(0.5 + Mathf.sin(Time.time * this.getEfficiency() * 0.15) * 0.5);
             Draw.rect(Core.atlas.find("collos-materia-reactor-lights"), this.x, this.y);
             Draw.alpha(1.0);
 	        Draw.color();
@@ -231,7 +231,7 @@ MaterialReactor.hasItems = true;
 MaterialReactor.hasLiquids = true;
 MaterialReactor.outputsPower = true;
 MaterialReactor.size = 7;
-MaterialReactor.health = 2270;
+MaterialReactor.health = 8250;
 MaterialReactor.category = Category.power;
 MaterialReactor.buildVisibility = BuildVisibility.shown;
 MaterialReactor.requirements = ItemStack.with(Items.silicon, 350, F.fi("cutol"), 400, F.fi("orbon"), 300, Items.plastanium, 400, Items.surgeAlloy, 300, Items.graphite, 375);

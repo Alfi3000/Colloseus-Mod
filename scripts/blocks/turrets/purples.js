@@ -5,7 +5,7 @@ const F = require("func");
 const RecoursiPlastanimBullet = extend(BasicBulletType, {
     draw(b) {
         Draw.color(C.magicLight, C.magic, b.fin());
-        Drawf.tri(b.x, b.y, 8.0, 8.0, Time.time() + (360/b.time) * 6.0); 
+        Drawf.tri(b.x, b.y, 8.0, 8.0, Time.time + (360/b.time) * 6.0); 
     }
 });
 RecoursiPlastanimBullet.ammoMultiplier = 3.0;
@@ -23,7 +23,7 @@ RecoursiPlastanimBullet.shootEffect = E.magicShootEffect;
 const RecoursiAmethystBullet = extend(BasicBulletType, {
     draw(b) {
         Draw.color(C.magicLight, C.magic, b.fin());
-        Drawf.tri(b.x, b.y, 5.6, 5.6, Time.time() + (360/b.time) * 6.0); 
+        Drawf.tri(b.x, b.y, 5.6, 5.6, Time.time + (360/b.time) * 6.0); 
     }
 });
 RecoursiAmethystBullet.damage = 36;
@@ -39,7 +39,7 @@ RecoursiAmethystBullet.shootEffect = E.magicShootEffect;
 const RecoursiTitaniumBullet = extend(BasicBulletType, {
     draw(b) {
         Draw.color(C.magicLight, C.magic, b.fin());
-        Drawf.tri(b.x, b.y, 7.2, 7.2, Time.time() + (360/b.time) * 6.0); 
+        Drawf.tri(b.x, b.y, 7.2, 7.2, Time.time + (360/b.time) * 6.0); 
     }
 });
 RecoursiTitaniumBullet.damage = 42;
@@ -420,10 +420,10 @@ const Decomposer = extendContent(ItemTurret, "decomposer", {
 Decomposer.buildType = () => {
 	const ent = extendContent(ItemTurret.ItemTurretBuild, Decomposer, {
         bullet(type, angle){
-            var lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(this.x + this.block.tr.x, this.y + this.block.tr.y, this.targetPos.x, this.targetPos.y) / type.range(), this.block.minRange / type.range(), this.blck.range / type.range()) : 1.0;
+            var lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(this.x + this.block.tr.x, this.y + this.block.tr.y, this.targetPos.x, this.targetPos.y) / type.range(), this.block.minRange / type.range(), this.block.range / type.range()) : 1.0;
 
             var bu = type.create(this, this.team, this.x + this.block.tr.x, this.y + this.block.tr.y, angle, 1.0 + Mathf.range(this.block.velocityInaccuracy), lifeScl);
-            bu.data = new Trail(10);
+            bu.data = new Trail(5);
         }
 	});
 	return ent;

@@ -86,7 +86,7 @@ UnitCommandBlock.buildType = () => {
 						if(!Vars.headless && shader[5] != null){
 						    current = new JavaAdapter(Shader, {
 							    apply(){
-							        this.setUniformf("u_time", Time.time() / Scl.scl(1.0));
+							        this.setUniformf("u_time", Time.time / Scl.scl(1.0));
 							    }
 						    }, shader[5][0], shader[5][1])
 						};
@@ -141,7 +141,7 @@ UnitCommandBlock.buildType = () => {
             var y = this.getSpawnPos()[1];
             
             if(y != this.y && x != this.x){
-			    Draw.color(Color.red.shiftHue(Time.time()));
+			    Draw.color(Color.red.shiftHue(Time.time*0.1));
 			    Draw.rect(Core.atlas.find("collos-unit-block-team"), x, y, 20, 20);
 			    Draw.color();
 		    }

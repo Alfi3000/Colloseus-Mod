@@ -3,7 +3,29 @@ const C = this.global.COLORS;
 const E = this.global.EFFECTS;
 const SO = this.global.SOUNDS;
 
-const CutolCrafter = extendContent(GenericSmelter, "cutol-crafter", {});
+const CutolCrafter = extendContent(GenericSmelter, "cutol-crafter", {
+    load() {
+		this.super$load();
+		this.topRegion = Core.atlas.find("clear");
+	}
+});
+CutolCrafter.buildType = () => {
+	const ent = extendContent(GenericSmelter.SmelterBuild, CutolCrafter, {
+        draw(){
+            this.super$draw();
+
+            if(this.warmup > 0.0 && this.block.flameColor.a > 0.001){
+				Draw.color(F.c("#638EDF"));
+				Draw.alpha((0.35 + Mathf.sin(Time.time*0.2)*0.1) * this.warmup);
+				Draw.blend(Blending.additive);
+				Draw.rect(Core.atlas.find("collos-cutol-crafter-heat"), this.x, this.y);
+				Draw.blend();
+                Draw.reset();
+            }
+        }
+	});
+	return ent;
+};
 CutolCrafter.hasPower = true;
 CutolCrafter.hasItems = true;
 CutolCrafter.health = 800;
@@ -20,13 +42,31 @@ CutolCrafter.itemCapacity = 10;
 CutolCrafter.category = Category.crafting;
 CutolCrafter.buildVisibility = BuildVisibility.shown;
 
-const LargePhaseWeaver = extendContent(GenericSmelter, "large-phase-weaver", {});
+const LargePhaseWeaver = extendContent(GenericCrafter, "large-phase-weaver", {});
+LargePhaseWeaver.buildType = () => {
+	const ent = extendContent(GenericCrafter.GenericCrafterBuild, LargePhaseWeaver , {
+        draw(){
+            this.super$draw();
+
+            if(this.warmup > 0.0){
+            	Draw.color(Items.phaseFabric.color);
+				Draw.alpha((0.25 + Mathf.sin(Time.time*0.1)*0.075) * this.warmup);
+				Draw.blend(Blending.additive);
+				Draw.rect(Core.atlas.find("collos-large-phase-weaver-heat"), this.x, this.y);
+				Draw.blend();
+				Draw.mixcol();
+                Draw.color();
+            }
+        }
+	});
+	return ent;
+};
 LargePhaseWeaver.buildVisibility = BuildVisibility.shown;
 LargePhaseWeaver.hasPower = true;
 LargePhaseWeaver.hasLiquids = true;
 LargePhaseWeaver.hasItems = true;
-LargePhaseWeaver.health = 300;
-LargePhaseWeaver.size = 3;
+LargePhaseWeaver.health = 640;
+LargePhaseWeaver.size = 4;
 LargePhaseWeaver.craftTime = 300;
 LargePhaseWeaver.consumes.power(12.5);
 LargePhaseWeaver.consumes.liquid(Liquids.cryofluid, 3.0/60.0);
@@ -38,8 +78,31 @@ LargePhaseWeaver.ambientSoundVolume = 0.05;
 LargePhaseWeaver.itemCapacity = 30;
 LargePhaseWeaver.liquidCapacity = 35;
 LargePhaseWeaver.category = Category.crafting;
+LargePhaseWeaver.drawer = new DrawWeave();
 
-const Diluent = extendContent(GenericSmelter, "diluent", {});
+const Diluent = extendContent(GenericSmelter, "diluent", {
+    load() {
+		this.super$load();
+		this.topRegion = Core.atlas.find("clear");
+	}
+});
+Diluent.buildType = () => {
+	const ent = extendContent(GenericSmelter.SmelterBuild, Diluent, {
+        draw(){
+            this.super$draw();
+
+            if(this.warmup > 0.0 && this.block.flameColor.a > 0.001){
+				Draw.color(F.fi("topaz").color);
+				Draw.alpha((0.35 + Mathf.sin(Time.time*0.2)*0.1) * this.warmup);
+				Draw.blend(Blending.additive);
+				Draw.rect(Core.atlas.find("collos-diluent-heat"), this.x, this.y);
+				Draw.blend();
+                Draw.reset();
+            }
+        }
+	});
+	return ent;
+};
 Diluent.buildVisibility = BuildVisibility.shown;
 Diluent.hasPower = true;
 Diluent.hasItems = true;
@@ -58,17 +121,32 @@ Diluent.itemCapacity = 10;
 Diluent.liquidCapacity = 60;
 Diluent.category = Category.crafting;
 
-const EnergySealer = extendContent(GenericCrafter, "energy-sealer", {
-	draw(){
-		this.super$draw();
-
-	    Tmp.c1.set(C.crystalizerDecal).lerp(C.crystalizerDecalLight, Mathf.sin(Time.time()*0.1)*0.5+0.5);
-		
-		Draw.mixcol(Tmp.c1, 1);
-		Draw.rect(Core.atlas.find("collos-energy-sealer-anim"), this.x, this.y);
-		Draw.mixcol();
+const EnergySealer = extendContent(GenericSmelter, "energy-sealer", {
+	load() {
+		this.super$load();
+		this.topRegion = Core.atlas.find("clear");
 	}
 });
+EnergySealer.buildType = () => {
+	const ent = extendContent(GenericSmelter.SmelterBuild, EnergySealer, {
+        draw(){
+            this.super$draw();
+
+            if(this.warmup > 0.0 && this.block.flameColor.a > 0.001){
+			    Tmp.c1.set(C.contritumLight).lerp(C.contritum, Mathf.sin(Time.time*0.2)*0.5+0.5);
+	
+				Draw.mixcol(Tmp.c1, 1);
+				Draw.alpha((0.35 + Mathf.sin(Time.time*0.2)*0.1) * this.warmup);
+				Draw.blend(Blending.additive);
+				Draw.rect(Core.atlas.find("collos-energy-sealer-heat"), this.x, this.y);
+				Draw.blend();
+				Draw.mixcol();
+                Draw.color();
+            }
+        }
+	});
+	return ent;
+};
 EnergySealer.buildVisibility = BuildVisibility.shown;
 EnergySealer.hasPower = true;
 EnergySealer.hasItems = true;
@@ -85,10 +163,34 @@ EnergySealer.category = Category.crafting;
 EnergySealer.requirements = ItemStack.with(F.fi("palladium"), 100, Items.titanium, 120, Items.silicon, 75, Items.surgeAlloy, 80, Items.plastanium, 50);
 
 const Crystalizer = extendContent(GenericCrafter, "crystalizer", {});
-const Glow = DrawGlow();
-Glow.glowAmount = 1.0;
-Glow.glowScale = 2.0;
+Crystalizer.buildType = () => {
+	const ent = extendContent(GenericCrafter.GenericCrafterBuild, Crystalizer, {
+        draw(){
+            this.super$draw();
 
+            if(this.warmup > 0.0){
+			    Tmp.c1.set(C.diamond).lerp(C.diamondDark, Mathf.sin(Time.time*0.1)*0.5+0.5);
+	
+				Draw.mixcol(Tmp.c1, 1);
+				Draw.alpha((0.35 + Mathf.sin(Time.time*0.2)*0.1) * this.warmup);
+				Draw.blend(Blending.additive);
+				Draw.rect(Core.atlas.find("collos-crystalizer-heat"), this.x, this.y);
+				Draw.blend();
+				Draw.mixcol();
+                Draw.color();
+            }
+        }
+	});
+	return ent;
+};
+const Glow = extend(DrawGlow, {
+    draw(entity){
+        Draw.rect(entity.block.region, entity.x, entity.y);
+        Draw.alpha(Mathf.clamp(entity.totalProgress) * entity.warmup);
+        Draw.rect(this.top, entity.x, entity.y);
+        Draw.reset();
+    }
+});
 Crystalizer.drawer = Glow;
 Crystalizer.buildVisibility = BuildVisibility.shown;
 Crystalizer.hasPower = true;
@@ -101,13 +203,28 @@ Crystalizer.consumes.power(20);
 Crystalizer.consumes.items(new ItemStack(F.fi("ruby"), 1), new ItemStack(F.fi("sapphire"), 1), new ItemStack(F.fi("amethyst"), 1), new ItemStack(F.fi("emerald"), 1), new ItemStack(F.fi("diamond"), 1), new ItemStack(F.fi("topaz"), 1));
 Crystalizer.requirements = ItemStack.with(F.fi("ruby"), 130, F.fi("diamond"), 85, Items.graphite, 125, Items.surgeAlloy, 75, Items.plastanium, 60);
 Crystalizer.outputItem = new ItemStack(F.fi("lux"), 1);
-Crystalizer.ambientSound = SO.pulse;
-Crystalizer.ambientSoundVolume = 0.2;
 Crystalizer.buildCostMultiplier = 0.7;
 Crystalizer.itemCapacity = 5;
 Crystalizer.category = Category.crafting;
 
 const OrbonCrafter = extendContent(GenericSmelter, "orbon-crafter", {});
+OrbonCrafter.buildType = () => {
+	const ent = extendContent(GenericSmelter.SmelterBuild, OrbonCrafter, {
+        draw(){
+            this.super$draw();
+
+            if(this.warmup > 0.0 && this.block.flameColor.a > 0.001){
+				Draw.color(F.fi("orbon").color);
+				Draw.alpha((0.35 + Mathf.sin(Time.time*0.1)*0.2) * this.warmup);
+				Draw.blend(Blending.additive);
+				Draw.rect(Core.atlas.find("collos-orbon-crafter-heat"), this.x, this.y);
+				Draw.blend();
+                Draw.reset();
+            }
+        }
+	});
+	return ent;
+};
 OrbonCrafter.hasPower = true;
 OrbonCrafter.hasItems = true;
 OrbonCrafter.health = 450;
@@ -124,6 +241,23 @@ OrbonCrafter.category = Category.crafting;
 OrbonCrafter.buildVisibility = BuildVisibility.shown;
 
 const ContritumCrafter = extendContent(GenericSmelter, "contritum-crafter", {});
+ContritumCrafter.buildType = () => {
+	const ent = extendContent(GenericSmelter.SmelterBuild, ContritumCrafter, {
+        draw(){
+            this.super$draw();
+
+            if(this.warmup > 0.0 && this.block.flameColor.a > 0.001){
+				Draw.color(C.contritum);
+				Draw.alpha((0.25 + Mathf.sin(Time.time*0.1)*0.1) * this.warmup);
+				Draw.blend(Blending.additive);
+				Draw.rect(Core.atlas.find("collos-contritum-crafter-heat"), this.x, this.y);
+				Draw.blend();
+                Draw.reset();
+            }
+        }
+	});
+	return ent;
+};
 const contritumPower = 2000.0/60.0;
 const contritumLiquid = 5.0/60.0;
 ContritumCrafter.hasPower = true;
@@ -131,7 +265,7 @@ ContritumCrafter.hasItems = true;
 ContritumCrafter.health = 2350;
 ContritumCrafter.size = 4;
 ContritumCrafter.craftTime = 90;
-ContritumCrafter.updateEffect = E.contritumCraft;
+ContritumCrafter.updateEffect = E.contritumUpdate;
 ContritumCrafter.consumes.power(contritumPower);
 ContritumCrafter.craftEffect = E.contritumCraft;
 ContritumCrafter.consumes.liquid(F.fl("helium-liquid"), contritumLiquid);
