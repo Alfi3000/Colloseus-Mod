@@ -9,7 +9,7 @@ This mod is entirely made up of scripts. The scripts and nothing more. Enjoy.
 **Current mod version - 1.1**
 
 
-Our (discord)[https://discord.gg/upDfpe8g]!
+Our [discord](https://discord.gg/upDfpe8g)!
 
 ![Logo](sprites-override/ui/logo.png)
 
