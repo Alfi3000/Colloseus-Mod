@@ -8,7 +8,7 @@ Our [discord](https://discord.gg/upDfpe8g)!
 
 **Min game version - 121**
 
-**Current mod version - 1.1.1**
+**Current mod version - 1.2.1**
 
 ![Logo](sprites-override/ui/logo.png)
 
